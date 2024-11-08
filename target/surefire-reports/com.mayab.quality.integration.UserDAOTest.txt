@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: com.mayab.quality.integration.UserDAOTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.671 s <<< FAILURE! -- in com.mayab.quality.integration.UserDAOTest
+com.mayab.quality.integration.UserDAOTest.testAddUserQry -- Time elapsed: 0.668 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Error en la configuración inicial: password
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:138)
+	at com.mayab.quality.integration.UserDAOTest.setUp(UserDAOTest.java:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
