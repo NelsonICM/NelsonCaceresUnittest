@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href=""?>
+<dataset>
+    <usuarios id="1" username="user1" email="user1@example.com" password="password1" ISLOGGED="false" />
+    <usuarios id="2" username="user2" email="user2@example.com" password="password2" ISLOGGED="false" />
+</dataset>
