@@ -1,0 +1,21 @@
+-- Make sure we use the correct database
+USE calidad2024;
+
+-- Drop the table if it exists (optional, in case you want to recreate it)
+DROP TABLE IF EXISTS usuarios;
+
+-- Create the table
+CREATE TABLE usuarios (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(30),
+    password VARCHAR(255),  -- Increased length for passwords
+    email VARCHAR(100),
+    tipo VARCHAR(15)  
+);
+
+
+-- Insert data into the table
+INSERT INTO usuarios (username, password, email, tipo) VALUES
+('user1', 'password1', 'user1@example.com', 'admin'),
+('user2', 'password2', 'user2@example.com', 'user'),
+('user3', 'password3', 'user3@example.com', 'guest');
