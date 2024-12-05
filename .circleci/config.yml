@@ -3,7 +3,7 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: openjdk:17
+      - image: maven:3.8.8-openjdk-17
     working_directory: ~/repo
 
 jobs:
@@ -11,11 +11,6 @@ jobs:
     executor: maven-executor
     steps:
       - checkout
-      - run:
-          name: Install Maven
-          command: |
-            apt-get update
-            apt-get install -y maven
       - run:
           name: Install Dependencies
           command: mvn install
@@ -25,7 +20,6 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
-  # Selenium tests job
   selenium-tests:
     executor: maven-executor
     steps:
@@ -38,8 +32,11 @@ jobs:
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
       - store_test_results:
           path: target/surefire-reports
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - src/screenshots
 
-  # Deployment job
   deploy:
     executor: maven-executor
     steps:
@@ -50,8 +47,8 @@ jobs:
       - run:
           name: Update GitHub Pages
           command: |
-            git config --global user.email "your-email@example.com"
-            git config --global user.name "Your Name"
+            git config --global user.email "nelsoncaceres98@gmail.com"
+            git config --global user.name "Nelson"
             cp -R src/screenshots/* docs/
             git add docs/
             git commit -m "Update GitHub Pages with test results"
