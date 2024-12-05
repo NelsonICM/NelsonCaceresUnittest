@@ -76,6 +76,15 @@ jobs:
       - run:
           name: Deploy Application
           command: ./deploy.sh
+          - run:
+    name: Update GitHub Pages
+    command: |
+      git config --global user.email "your-email@example.com"
+      git config --global user.name "Your Name"
+      cp -R src/screenshots/* docs/
+      git add docs/
+      git commit -m "Update GitHub Pages with test results"
+      git push origin main
 
 workflows:
   version: 2
