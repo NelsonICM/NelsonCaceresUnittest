@@ -1,0 +1,9 @@
+com\mayab\quality\unittest\Calculadora.class
+com\mayab\quality\doubles\Dependency.class
+com\mayab\quality\loginunittest\service\LoginService.class
+com\mayab\quality\loginunittest\service\UserService.class
+com\mayab\quality\unittest\App.class
+com\mayab\quality\loginunittest\dao\IDAOUser.class
+com\mayab\quality\loginunittest\dao\UserMysqlDAO.class
+com\mayab\quality\loginunittest\model\User.class
+com\mayab\quality\doubles\SubDependency.class
