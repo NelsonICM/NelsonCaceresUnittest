@@ -3,7 +3,7 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: maven:3.8.8-openjdk-17
+      - image: cimg/openjdk:17.0
     working_directory: ~/repo
 
 jobs:
@@ -47,8 +47,8 @@ jobs:
       - run:
           name: Update GitHub Pages
           command: |
-            git config --global user.email "nelsoncaceres98@gmail.com"
-            git config --global user.name "Nelson"
+            git config --global user.email "your-email@example.com"
+            git config --global user.name "Your Name"
             cp -R src/screenshots/* docs/
             git add docs/
             git commit -m "Update GitHub Pages with test results"
