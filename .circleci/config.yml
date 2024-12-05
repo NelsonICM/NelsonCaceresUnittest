@@ -3,8 +3,8 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: circleci/openjdk:17
-      - image: circleci/mysql:5.7
+      - image: circleci/openjdk:17-browsers  # Includes Maven pre-installed
+      - image: mysql:5.7                     # MySQL Service
         environment:
           MYSQL_ROOT_PASSWORD: 123456
           MYSQL_DATABASE: calidad2024
@@ -19,7 +19,7 @@ jobs:
           name: Wait for MySQL to Be Ready
           command: |
             for i in `seq 1 30`; do
-              if nc -z 127.0.0.1 3306; then
+              if mysqladmin ping -h127.0.0.1 --silent; then
                 echo "MySQL is up"
                 exit 0
               fi
@@ -27,11 +27,6 @@ jobs:
               sleep 5
             done
             echo "MySQL did not start in time" && exit 1
-      - run:
-          name: Install Maven
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y maven
       - run:
           name: Install Dependencies
           command: mvn install
