@@ -3,7 +3,7 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: circleci/openjdk:17
+      - image: openjdk:17
     working_directory: ~/repo
 
 jobs:
@@ -17,12 +17,12 @@ jobs:
           command: mvn install
       - run:
           name: Run Unit Tests
-          command: mvn test -Dtest=com.mayab.quality.unittest.service.UserServiceTest
+          command: mvn test -Dtest=com.mayab.quality.logginunittest.service.UserServiceTest
       - store_test_results:
           path: target/surefire-reports
 
-  # Functional tests job
-  functional-tests:
+  # Selenium tests job
+  selenium-tests:
     executor: maven-executor
     steps:
       - checkout
@@ -30,29 +30,10 @@ jobs:
           name: Install Dependencies
           command: mvn install
       - run:
-          name: Run Functional Tests
+          name: Run Selenium Tests
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
       - store_test_results:
           path: target/surefire-reports
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - src/screenshots
-
-  # Publish results job
-  publish-results:
-    executor: maven-executor
-    steps:
-      - checkout
-      - run:
-          name: Publish Selenium Test Results
-          command: |
-            git config --global user.email "your-email@example.com"
-            git config --global user.name "Your Name"
-            mv src/screenshots/* docs/
-            git add docs/
-            git commit -m "Update test results"
-            git push origin main
 
   # Deployment job
   deploy:
@@ -65,8 +46,8 @@ jobs:
       - run:
           name: Update GitHub Pages
           command: |
-            git config --global user.email "nelsoncaceres98@gmail.com"
-            git config --global user.name "Nelson"
+            git config --global user.email "your-email@example.com"
+            git config --global user.name "Your Name"
             cp -R src/screenshots/* docs/
             git add docs/
             git commit -m "Update GitHub Pages with test results"
@@ -77,15 +58,12 @@ workflows:
   test-and-deploy:
     jobs:
       - unit-tests
-      - functional-tests:
+      - selenium-tests:
           requires:
             - unit-tests
-      - publish-results:
-          requires:
-            - functional-tests
       - deploy:
           requires:
-            - publish-results
+            - selenium-tests
           filters:
             branches:
               only: main
