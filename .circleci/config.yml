@@ -21,7 +21,6 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
-
   # Functional tests job
   functional-tests:
     executor: maven-executor
@@ -63,27 +62,24 @@ jobs:
       - run:
           name: Deploy Application
           command: ./deploy.sh
-          - run:
-    name: Update GitHub Pages
-    command: |
-      git config --global user.email "nelsoncaceres98@gmail.com"
-      git config --global user.name "Nelson"
-      cp -R src/screenshots/* docs/
-      git add docs/
-      git commit -m "Update GitHub Pages with test results"
-      git push origin main
+      - run:
+          name: Update GitHub Pages
+          command: |
+            git config --global user.email "nelsoncaceres98@gmail.com"
+            git config --global user.name "Nelson"
+            cp -R src/screenshots/* docs/
+            git add docs/
+            git commit -m "Update GitHub Pages with test results"
+            git push origin main
 
 workflows:
   version: 2
   test-and-deploy:
     jobs:
       - unit-tests
-      - integration-tests:
-          requires:
-            - unit-tests
       - functional-tests:
           requires:
-            - integration-tests
+            - unit-tests
       - publish-results:
           requires:
             - functional-tests
