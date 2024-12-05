@@ -4,11 +4,18 @@ executors:
   maven-executor:
     docker:
       - image: cimg/openjdk:17.0
-      - image: mysql:5.7 # Add MySQL as a service
-        environment:
-          MYSQL_ROOT_PASSWORD: 123456
-          MYSQL_DATABASE: calidad2024
+      - image: mysql:5.7
+  environment:
+    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_DATABASE: calidad2024
     working_directory: ~/repo
+    - image: mysql:5.7
+  environment:
+    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_DATABASE: calidad2024
+  ports:
+    - "3307:3306"
+
 
 jobs:
   unit-tests:
@@ -34,6 +41,25 @@ jobs:
       - run:
           name: Run Unit Tests
           command: mvn test -Dtest=com.mayab.quality.logginunittest.service.UserServiceTest
+
+          - run:
+    name: Wait for MySQL to Be Ready
+    command: |
+      for i in `seq 1 30`; do
+        if nc -z localhost 3307; then
+          echo "MySQL is up"
+          exit 0
+        fi
+        echo "Waiting for MySQL..."
+        sleep 5
+      done
+      echo "MySQL did not start in time" && exit 1
+
+      - run:
+    name: Debug MySQL Logs
+    command: |
+      docker logs $(docker ps -q --filter ancestor=mysql:5.7)
+          
       - store_test_results:
           path: target/surefire-reports
 
