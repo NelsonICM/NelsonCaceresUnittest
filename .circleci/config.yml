@@ -48,6 +48,34 @@ jobs:
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
       - store_test_results:
           path: target/surefire-reports
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - src/screenshots
+
+  # Publish results job
+  publish-results:
+    executor: maven-executor
+    steps:
+      - checkout
+      - run:
+          name: Publish Selenium Test Results
+          command: |
+            git config --global user.email "your-email@example.com"
+            git config --global user.name "Your Name"
+            mv src/screenshots/* docs/
+            git add docs/
+            git commit -m "Update test results"
+            git push origin main
+
+  # Deployment job
+  deploy:
+    executor: maven-executor
+    steps:
+      - checkout
+      - run:
+          name: Deploy Application
+          command: ./deploy.sh
 
 workflows:
   version: 2
@@ -60,3 +88,12 @@ workflows:
       - functional-tests:
           requires:
             - integration-tests
+      - publish-results:
+          requires:
+            - functional-tests
+      - deploy:
+          requires:
+            - publish-results
+          filters:
+            branches:
+              only: main
