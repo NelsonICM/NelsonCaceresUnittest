@@ -3,11 +3,13 @@ version: 2.1
 executors:
   maven-executor:
     docker:
-      - image: cimg/openjdk:17.0
-      - image: mysql:5.7 # Add MySQL as a service
+      - image: circleci/openjdk:17
+      - image: mysql:5.7
         environment:
           MYSQL_ROOT_PASSWORD: 123456
           MYSQL_DATABASE: calidad2024
+        ports:
+          - "3307:3306"
     working_directory: ~/repo
 
 jobs:
@@ -18,16 +20,20 @@ jobs:
       - run:
           name: Wait for MySQL to Be Ready
           command: |
-            for i in `seq 1 10`; do
-              nc -z localhost 3307 && echo "MySQL is up" && exit 0
+            for i in `seq 1 30`; do
+              if nc -z localhost 3307; then
+                echo "MySQL is up"
+                exit 0
+              fi
               echo "Waiting for MySQL..."
-              sleep 3
+              sleep 5
             done
             echo "MySQL did not start in time" && exit 1
       - run:
-          name: Initialize Database
+          name: Install Maven
           command: |
-            mysql -h localhost -P 3307 -u root -p123456 calidad2024 < src/test/resources/setup.sql
+            apt-get update
+            apt-get install -y maven
       - run:
           name: Install Dependencies
           command: mvn install
@@ -60,8 +66,8 @@ jobs:
       - run:
           name: Update GitHub Pages
           command: |
-            git config --global user.email "nelsoncaceres98@gmail.com"
-            git config --global user.name "Nelson"
+            git config --global user.email "your-email@example.com"
+            git config --global user.name "Your Name"
             cp -R src/screenshots/* docs/
             git add docs/
             git commit -m "Update GitHub Pages with test results"
@@ -81,3 +87,4 @@ workflows:
           filters:
             branches:
               only: main
+
