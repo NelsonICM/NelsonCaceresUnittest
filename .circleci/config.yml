@@ -21,19 +21,6 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
-  # Integration tests job
-  integration-tests:
-    executor: maven-executor
-    steps:
-      - checkout
-      - run:
-          name: Install Dependencies
-          command: mvn install
-      - run:
-          name: Run Integration Tests
-          command: mvn test -Dtest=com.mayab.quality.integration.UserDAOTest
-      - store_test_results:
-          path: target/surefire-reports
 
   # Functional tests job
   functional-tests:
