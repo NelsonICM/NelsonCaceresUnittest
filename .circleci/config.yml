@@ -4,6 +4,10 @@ executors:
   maven-executor:
     docker:
       - image: cimg/openjdk:17.0
+      - image: mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: unittest
     working_directory: ~/repo
 
 jobs:
@@ -11,6 +15,15 @@ jobs:
     executor: maven-executor
     steps:
       - checkout
+      - run:
+          name: Wait for MySQL to Be Ready
+          command: |
+            for i in `seq 1 10`; do
+              nc -z localhost 3306 && echo "MySQL is up" && exit 0
+              echo "Waiting for MySQL..."
+              sleep 3
+            done
+            echo "MySQL did not start in time" && exit 1
       - run:
           name: Install Dependencies
           command: mvn install
@@ -32,10 +45,6 @@ jobs:
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
       - store_test_results:
           path: target/surefire-reports
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - src/screenshots
 
   deploy:
     executor: maven-executor
@@ -68,3 +77,4 @@ workflows:
           filters:
             branches:
               only: main
+
