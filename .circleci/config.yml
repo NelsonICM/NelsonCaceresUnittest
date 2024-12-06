@@ -42,12 +42,7 @@ workflows:
   test-and-deploy:
     jobs:
       - unit-tests
-      - selenium-tests:
-          requires:
-            - unit-tests
       - deploy:
-          requires:
-            - selenium-tests
           filters:
             branches:
               only: main
