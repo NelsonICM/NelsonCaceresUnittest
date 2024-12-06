@@ -41,7 +41,7 @@ workflows:
       - unit-tests
       - deploy:
           requires:
-            -unit-test-
+            -unittest
           filters:
             branches:
               only: main
