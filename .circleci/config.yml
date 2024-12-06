@@ -25,7 +25,7 @@ jobs:
           name: Install Dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install -y wget unzip curl apt-transport-https ca-certificates libnss3 libxss1 libgconf-2-4 libappindicator3-1 fonts-liberation
+            sudo apt-get install -y wget unzip curl apt-transport-https ca-certificates
       - run:
           name: Add Google Chrome Repository
           command: |
@@ -50,8 +50,7 @@ jobs:
           command: chromedriver --version
       - run:
           name: Run Selenium Tests
-          command: |
-            mvn test -Dtest=com.mayab.quality.functional.SeleniumTests -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -Dchromeoptions.args="--headless,--no-sandbox,--disable-dev-shm-usage"
+          command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
       - store_test_results:
           path: target/surefire-reports
 
@@ -83,4 +82,3 @@ workflows:
       - deploy:
           requires:
             - selenium-tests
-
