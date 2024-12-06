@@ -128,11 +128,21 @@ class SeleniumTests {
     @Order(4)
     public void DeleteRecord() {
         driver.get("https://mern-crud-mpfr.onrender.com/");
-        pause(5000);
+        pause(5000); // Wait for the page to load
+        
+        // Click the delete button
         driver.findElement(By.xpath("//div[@id='root']/div/div[2]/table/tbody/tr/td[5]/button[2]")).click();
+        
+        // Confirm deletion in the modal
         driver.findElement(By.xpath("(.//*[normalize-space(text()) and normalize-space(.)='Jhon Doe'])[2]/following::button[1]")).click();
-        boolean isPresent = driver.findElement(By.xpath("/html/body/div[2]/div/div[2]/table/tbody")).getText().contains("Jhon Doe");
-
+        
+        // Pause to allow deletion to process
+        pause(2000);
+        
+        // Re-fetch the table element and verify if "Jhon Doe" is present
+        boolean isPresent = driver.findElements(By.xpath("//td[contains(text(), 'Jhon Doe')]")).size() > 0;
+        
+        // Assert the record has been deleted
         assertFalse(isPresent, "The record 'Jhon Doe' is still present in the table.");
     }
 
