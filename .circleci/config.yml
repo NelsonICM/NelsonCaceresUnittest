@@ -40,8 +40,7 @@ jobs:
           name: Install ChromeDriver
           command: |
             CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
-            MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d. -f1)
-            DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_VERSION")
+            DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
             wget "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
@@ -83,4 +82,3 @@ workflows:
       - deploy:
           requires:
             - selenium-tests
-
