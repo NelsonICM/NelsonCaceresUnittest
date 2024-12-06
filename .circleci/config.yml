@@ -40,6 +40,8 @@ workflows:
     jobs:
       - unit-tests
       - deploy:
+          requires:
+            -unit-test
           filters:
             branches:
               only: main
