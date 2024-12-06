@@ -53,7 +53,7 @@ class UserServiceTest {
         service.createUser("name", "email", "password");
 
         int sizeAfter = db.size();
-        assertThat(sizeAfter, is(sizeBefore + ));
+        assertThat(sizeAfter, is(sizeBefore + 1));
     }
 
     // Second test: Handle duplicate email
