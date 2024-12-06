@@ -25,7 +25,7 @@ jobs:
           name: Install Dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install -y wget unzip curl apt-transport-https ca-certificates
+            sudo apt-get install -y wget unzip curl apt-transport-https ca-certificates libnss3 libxss1 libgconf-2-4 libappindicator3-1 fonts-liberation
       - run:
           name: Add Google Chrome Repository
           command: |
@@ -40,7 +40,7 @@ jobs:
           name: Install ChromeDriver
           command: |
             CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
-            DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+            DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*}")
             wget "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
@@ -50,7 +50,8 @@ jobs:
           command: chromedriver --version
       - run:
           name: Run Selenium Tests
-          command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
+          command: |
+            mvn test -Dtest=com.mayab.quality.functional.SeleniumTests -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -Dchromeoptions.args="--headless,--no-sandbox,--disable-gpu,--disable-dev-shm-usage"
       - store_test_results:
           path: target/surefire-reports
 
