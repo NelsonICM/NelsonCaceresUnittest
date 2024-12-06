@@ -12,9 +12,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Dependencies
-          command: mvn install
-      - run:
           name: Run Unit Tests
           command: mvn test -Dtest=com.mayab.quality.logginunittest.service.UserServiceTest
       - store_test_results:
