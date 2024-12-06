@@ -17,6 +17,15 @@ jobs:
       - store_test_results:
           path: target/surefire-reports
 
+  selenium-tests:
+    steps:
+      - checkout
+      - run:
+          name: Run Selenium Tests
+          command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
+      - store_test_results:
+          path: target/surefire-reports
+
   deploy:
     executor: maven-executor
     steps:
@@ -39,3 +48,9 @@ workflows:
   test-and-deploy:
     jobs:
       - unit-tests
+      - selenium-tests:
+          requires:
+            - unit-tests
+      - deploy:
+          requires:
+            - selenium-tests
