@@ -22,6 +22,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Set Up Google Chrome Repository
+          command: |
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google.gpg
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+      - run:
           name: Install Chrome
           command: |
             sudo apt-get update
