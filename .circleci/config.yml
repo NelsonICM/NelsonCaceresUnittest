@@ -25,12 +25,12 @@ jobs:
           name: Install Dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install -y wget unzip curl
+            sudo apt-get install -y wget unzip curl apt-transport-https ca-certificates
       - run:
           name: Add Google Chrome Repository
           command: |
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+            echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
       - run:
           name: Install Chrome
           command: |
@@ -40,11 +40,14 @@ jobs:
           name: Install ChromeDriver
           command: |
             CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
-            DRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+            DRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
             wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
             unzip chromedriver_linux64.zip
             sudo mv chromedriver /usr/local/bin/
             sudo chmod +x /usr/local/bin/chromedriver
+      - run:
+          name: Verify ChromeDriver Installation
+          command: chromedriver --version
       - run:
           name: Run Selenium Tests
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
@@ -79,4 +82,3 @@ workflows:
       - deploy:
           requires:
             - selenium-tests
-
