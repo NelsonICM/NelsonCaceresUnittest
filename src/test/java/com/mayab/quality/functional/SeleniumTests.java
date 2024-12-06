@@ -1,8 +1,8 @@
 package com.mayab.quality.functional;
 
-import static org.hamcrest.MatcherAssert.assertThat; // Correct import
-import static org.hamcrest.CoreMatchers.is; // Correct import
-import static org.junit.jupiter.api.Assertions.assertFalse; // Correct import
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -35,12 +36,22 @@ class SeleniumTests {
 
     @BeforeEach
     void setupTest() {
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // Run in headless mode
+        options.addArguments("--disable-gpu"); // Disable GPU acceleration
+        options.addArguments("--no-sandbox"); // Required for containerized environments
+        options.addArguments("--disable-dev-shm-usage"); // Use shared memory
+        options.addArguments("--remote-allow-origins=*"); // Allow all origins
+        options.addArguments("--window-size=1920,1080"); // Set the window size for headless mode
+
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
     void teardown() {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     @Test
