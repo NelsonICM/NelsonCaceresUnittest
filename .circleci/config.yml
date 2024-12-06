@@ -18,9 +18,23 @@ jobs:
           path: target/surefire-reports
 
   selenium-tests:
-    executor: maven-executor  # Added missing executor
+    executor: maven-executor
     steps:
       - checkout
+      - run:
+          name: Install Chrome
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+      - run:
+          name: Install ChromeDriver
+          command: |
+            CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+            DRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION%.*})
+            wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/chromedriver
       - run:
           name: Run Selenium Tests
           command: mvn test -Dtest=com.mayab.quality.functional.SeleniumTests
