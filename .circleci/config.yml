@@ -71,7 +71,6 @@ workflows:
   version: 2
   test-and-deploy:
     jobs:
-    working_directory: ~/repo
       - unit-tests
       - selenium-tests:
           requires:
