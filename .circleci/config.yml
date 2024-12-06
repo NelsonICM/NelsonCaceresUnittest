@@ -18,6 +18,7 @@ jobs:
           path: target/surefire-reports
 
   selenium-tests:
+    executor: maven-executor  # Added missing executor
     steps:
       - checkout
       - run:
